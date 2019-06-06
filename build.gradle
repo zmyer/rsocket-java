@@ -55,8 +55,12 @@ subprojects {
             dependency "io.micrometer:micrometer-core:${ext['micrometer.version']}"
             dependency "org.assertj:assertj-core:${ext['assertj.version']}"
             dependency "org.hdrhistogram:HdrHistogram:${ext['hdrhistogram.version']}"
-            dependency "org.mockito:mockito-core:${ ext['mockito.version']}"
             dependency "org.slf4j:slf4j-api:${ext['slf4j.version']}"
+            
+            dependencySet(group: 'org.mockito', version: ext['mockito.version']) {
+                entry 'mockito-junit-jupiter'
+                entry 'mockito-core'
+            }
 
             dependencySet(group: 'org.junit.jupiter', version: ext['junit.version']) {
                 entry 'junit-jupiter-api'
