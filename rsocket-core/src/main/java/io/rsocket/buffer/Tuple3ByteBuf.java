@@ -187,7 +187,7 @@ class Tuple3ByteBuf extends AbstractTupleByteBuf {
   @Override
   public ByteBuf getBytes(int index, ByteBuf dst, int dstIndex, int length) {
     // checkDstIndex(index, length, dstIndex, dst.capacity());
-    checkDst("getBytes(int,BB,int,int)", index, dstIndex, dst.capacity());
+    checkDst("getBytes(int,BB,int,int)", index, length, dstIndex, dst.capacity());
     long ri = calculateRelativeIndex(index);
     index = (int) (ri & Integer.MAX_VALUE);
     switch ((int) ((ri & MASK) >>> 32L)) {

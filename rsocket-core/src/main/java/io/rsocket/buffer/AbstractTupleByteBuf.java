@@ -2,9 +2,7 @@ package io.rsocket.buffer;
 
 import io.netty.buffer.*;
 import io.netty.util.internal.SystemPropertyUtil;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
@@ -620,8 +618,17 @@ abstract class AbstractTupleByteBuf extends AbstractReferenceCountedByteBuf {
           .append("method: ")
           .append(call)
           .append("\n\n")
-          .append("bytes: ")
-          .append(ByteBufUtil.hexDump(this))
+          .append("capacity: ")
+          .append(capacity())
+          .append("\n\n")
+          .append("readable bytes: ")
+          .append(readableBytes())
+          .append("\n\n")
+          .append("reader index: ")
+          .append(readerIndex())
+          .append("\n\n")
+          .append("components: ")
+          .append(toString())
           .append("\n\n")
           .append("stacktrace: ")
           .append(stackTrace(t));
@@ -630,9 +637,9 @@ abstract class AbstractTupleByteBuf extends AbstractReferenceCountedByteBuf {
     }
   }
 
-  final void checkDst(String call, int length, int dstIndex, int dstCapacity) {
+  final void checkDst(String call, int index, int length, int dstIndex, int dstCapacity) {
     try {
-      checkDstIndex(length, dstIndex, dstCapacity);
+      checkDstIndex(index, length, dstIndex, dstCapacity);
     } catch (Throwable t) {
       StringBuilder sb = new StringBuilder();
       sb.append("source message: ")
