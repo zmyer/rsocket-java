@@ -46,7 +46,8 @@ class Tuple2ByteBuf extends AbstractTupleByteBuf {
 
   @Override
   long calculateRelativeIndex(int index) {
-    checkIndex(index, 0);
+    // checkIndex(index, 0);
+    check("calculateRelativeIndex(int)", index, 0);
 
     long relativeIndex;
     long mask;
@@ -178,7 +179,8 @@ class Tuple2ByteBuf extends AbstractTupleByteBuf {
 
   @Override
   public ByteBuf getBytes(int index, final OutputStream out, int length) throws IOException {
-    checkIndex(index, length);
+    // checkIndex(index, length);
+    check("getBytes(int, OS, int)", index, length);
     long ri = calculateRelativeIndex(index);
     index = (int) (ri & Integer.MAX_VALUE);
     switch ((int) ((ri & MASK) >>> 32L)) {
@@ -206,7 +208,8 @@ class Tuple2ByteBuf extends AbstractTupleByteBuf {
 
   @Override
   public int getBytes(int index, GatheringByteChannel out, int length) throws IOException {
-    checkIndex(index, length);
+    // checkIndex(index, length);
+    check("getBytes(int,GBC, int)", index, length);
     int read = 0;
     long ri = calculateRelativeIndex(index);
     index = (int) (ri & Integer.MAX_VALUE);
@@ -235,7 +238,8 @@ class Tuple2ByteBuf extends AbstractTupleByteBuf {
 
   @Override
   public int getBytes(int index, FileChannel out, long position, int length) throws IOException {
-    checkIndex(index, length);
+    // checkIndex(index, length);
+    check("getBytes(int, FO, long, int)", index, length);
     int read = 0;
     long ri = calculateRelativeIndex(index);
     index = (int) (ri & Integer.MAX_VALUE);
@@ -265,7 +269,8 @@ class Tuple2ByteBuf extends AbstractTupleByteBuf {
 
   @Override
   public ByteBuf copy(int index, int length) {
-    checkIndex(index, length);
+    // checkIndex(index, length);
+    check("copy(int,int)", index, length);
 
     ByteBuf buffer = allocator.buffer(length);
 
@@ -304,7 +309,8 @@ class Tuple2ByteBuf extends AbstractTupleByteBuf {
 
   @Override
   public ByteBuf slice(final int readIndex, int length) {
-    checkIndex(readIndex, length);
+    // checkIndex(readIndex, length);
+    check("slice(int,int)", readIndex, length);
 
     if (readIndex == 0 && length == capacity) {
       return new Tuple2ByteBuf(

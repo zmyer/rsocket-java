@@ -1,11 +1,10 @@
 package io.rsocket.buffer;
 
-import io.netty.buffer.AbstractReferenceCountedByteBuf;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.Unpooled;
+import io.netty.buffer.*;
 import io.netty.util.internal.SystemPropertyUtil;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
@@ -35,7 +34,8 @@ abstract class AbstractTupleByteBuf extends AbstractReferenceCountedByteBuf {
 
   @Override
   public ByteBuffer nioBuffer(int index, int length) {
-    checkIndex(index, length);
+    // checkIndex(index, length);
+    check("nioBuffer(int, int)", index, length);
 
     ByteBuffer[] buffers = nioBuffers(index, length);
 
@@ -56,7 +56,8 @@ abstract class AbstractTupleByteBuf extends AbstractReferenceCountedByteBuf {
 
   @Override
   public ByteBuffer[] nioBuffers(int index, int length) {
-    checkIndex(index, length);
+    // checkIndex(index, length);
+    check("nioBuffers(int, int)", index, length);
     if (length == 0) {
       return new ByteBuffer[] {EMPTY_NIO_BUFFER};
     }
@@ -604,4 +605,63 @@ abstract class AbstractTupleByteBuf extends AbstractReferenceCountedByteBuf {
 
   @Override
   protected void _setLongLE(int index, long value) {}
+
+  final void check(String call, int index, int length) {
+    try {
+      checkIndex(index, length);
+    } catch (Throwable t) {
+      StringBuilder sb = new StringBuilder();
+      sb.append("source message: ")
+          .append(t.getMessage())
+          .append("\n\n")
+          .append("class: ")
+          .append(getClass().getName())
+          .append("\n\n")
+          .append("method: ")
+          .append(call)
+          .append("\n\n")
+          .append("bytes: ")
+          .append(ByteBufUtil.hexDump(this))
+          .append("\n\n")
+          .append("stacktrace: ")
+          .append(stackTrace(t));
+
+      throw new RuntimeException(sb.toString(), t);
+    }
+  }
+
+  final void checkDst(String call, int length, int dstIndex, int dstCapacity) {
+    try {
+      checkDstIndex(length, dstIndex, dstCapacity);
+    } catch (Throwable t) {
+      StringBuilder sb = new StringBuilder();
+      sb.append("source message: ")
+          .append(t.getMessage())
+          .append("\n\n")
+          .append("class: ")
+          .append(getClass().getName())
+          .append("\n\n")
+          .append("method: ")
+          .append(call)
+          .append("\n\n")
+          .append("bytes: ")
+          .append(ByteBufUtil.hexDump(this))
+          .append("\n\n")
+          .append("stacktrace: ")
+          .append(stackTrace(t));
+
+      throw new RuntimeException(sb.toString(), t);
+    }
+  }
+
+  private static String stackTrace(Throwable t) {
+    try {
+      StringWriter sw = new StringWriter();
+      PrintWriter pw = new PrintWriter(sw);
+      t.printStackTrace(pw);
+      return sw.toString();
+    } catch (Throwable throwable) {
+      return "stacktrace error: " + throwable.getMessage();
+    }
+  }
 }
