@@ -32,7 +32,7 @@ subprojects {
     ext['reactor-bom.version'] = 'Dysprosium-RELEASE'
     ext['logback.version'] = '1.2.3'
     ext['findbugs.version'] = '3.0.2'
-    ext['netty-bom.version'] = '4.1.37.Final'
+    ext['netty-bom.version'] = '4.1.39.Final'
     ext['netty-boringssl.version'] = '2.0.25.Final'
     ext['hdrhistogram.version'] = '2.1.10'
     ext['mockito.version'] = '2.25.1'
